@@ -20,6 +20,7 @@
 #define AUDIO_DEVICE_IN_AF (AUDIO_DEVICE_BIT_IN | 0x1000000)
 #define AUDIO_MODE_MODE_FACTORY_TEST 4
 #define AUDIO_MODE_FM 5
+#define AUDIO_MODE_AUX 6
 
 #include <errno.h>
 #include <pthread.h>
@@ -58,13 +59,14 @@
 static int CASE_NAME = 0;
 static bool NO_EARPIECE = 1;
 
-#define MIXER_CARD 0
+#define MIXER_CARD 1
 
 /* ALSA cards for A1X */
-#define CARD_A1X_CODEC		0
-#define CARD_A1X_HDMI		1
-#define CARD_A1X_SPDIF		2
-#define CARD_A1X_DEFAULT	0
+#define CARD_A1X_CODEC		 2
+#define CARD_A1X_HDMI		 0
+#define CARD_A1X_SPDIF		 3
+#define CARD_A1X_DEFAULT	 1
+#define CARD_A1X_WM8904_CARD 1
 
 /* ALSA ports for A1X */
 #define PORT_CODEC			0
@@ -125,6 +127,9 @@ static bool last_communication_is_bt = 0;
 #define MIXER_EARPIECE_VOLUME "earpiece volume"
 
 /*normal path*/
+#define media_radio_capture "radio-capture-route"
+#define media_aux_capture "aux-capture-route"
+#define media_camcorder "camcorder-route"
 #define	media_speaker	"media-speaker"   /* OUT_DEVICE_SPEAKER */
 #define	media_headset "media-headphones"/* OUT_DEVICE_HEADSET */
 #define	media_headphones	"media-headphones"/* OUT_DEVICE_HEADPHONES */
@@ -1096,6 +1101,12 @@ static void select_device(struct sunxi_audio_device *adev)
 			output_route = ringtone_route_configs[output_device_id];
 			break;
 		case AUDIO_MODE_FM:
+			ALOGV("FM mode, ****LINE:%d,FUNC:%s, adev->out_device:%d",__LINE__,__FUNCTION__, adev->out_device);
+			output_route = media_radio_capture;
+			break;
+		case AUDIO_MODE_AUX:
+			ALOGV("AUX mode, ****LINE:%d,FUNC:%s, adev->out_device:%d",__LINE__,__FUNCTION__, adev->out_device);
+			output_route = media_aux_capture;
 			break;
 		case AUDIO_MODE_MODE_FACTORY_TEST:
 			break;
@@ -1196,12 +1207,20 @@ static void select_device(struct sunxi_audio_device *adev)
 				input_route = dmic_cap_normal_route_configs[input_device_id];
 			else
 				input_route = cap_normal_route_configs[input_device_id];
+			if (adev->active_input->source == AUDIO_SOURCE_CAMCORDER) {
+				ALOGE("camcorder route,****LINE:%d,FUNC:%s",__LINE__,__FUNCTION__);
+				input_route = media_camcorder;
+			}
 			ALOGV("normal record,****LINE:%d,FUNC:%s,adev->in_device:%d",__LINE__,__FUNCTION__,adev->in_device);
 		} else if (adev->mode == AUDIO_MODE_IN_COMMUNICATION) {
 			if (dmic_used)
 				input_route = dmic_cap_normal_route_configs[input_device_id];
 			else
 				input_route = cap_normal_route_configs[input_device_id];
+			if (adev->active_input->source == AUDIO_SOURCE_CAMCORDER) {
+				ALOGE("camcorder route,****LINE:%d,FUNC:%s",__LINE__,__FUNCTION__);
+				input_route = media_camcorder;
+			}
 			F_LOG;
 		}
 
@@ -1209,10 +1228,10 @@ static void select_device(struct sunxi_audio_device *adev)
 
 	if (phone_route)
 		audio_route_apply_path(adev->ar, phone_route);
-	if (output_route)
-		audio_route_apply_path(adev->ar, output_route);
 	if (input_route)
 		audio_route_apply_path(adev->ar, input_route);
+	if (output_route)
+		audio_route_apply_path(adev->ar, output_route);
 
 	audio_route_update_mixer(adev->ar);
 
@@ -1518,12 +1537,13 @@ static int do_output_standby(struct sunxi_stream_out *out)
 			out->resampler = 0;//close resample
 		}
 
+		select_device(adev);
+
 		/* stop writing to echo reference */
 		if (out->echo_reference != NULL) {
 			out->echo_reference->write(out->echo_reference, NULL);
 			out->echo_reference = NULL;
 		}
-
 		out->standby = 1;
 	}
 	return 0;
@@ -1848,9 +1868,9 @@ static int start_input_stream(struct sunxi_stream_in *in)
 	ALOGV("rate:%d, period_count:%d, period_size:%d,channels:%d",  in->config.rate, in->config.period_count, in->config.period_size,in->config.channels);
 	ALOGV("in_ajust_rate:%d", in_ajust_rate);
 	if (adev->mode == AUDIO_MODE_IN_CALL)
-		in->pcm = pcm_open(0, PORT_VIR_CODEC, PCM_IN, &in->config);
+		in->pcm = pcm_open(CARD_A1X_DEFAULT, PORT_VIR_CODEC, PCM_IN, &in->config);
 	else
-		in->pcm = pcm_open(0, PORT_CODEC, PCM_IN, &in->config);
+		in->pcm = pcm_open(CARD_A1X_DEFAULT, PORT_CODEC, PCM_IN, &in->config);
 
 	if (!pcm_is_ready(in->pcm)) {
 		ALOGE("cannot open pcm_in driver: %s", pcm_get_error(in->pcm));

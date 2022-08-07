@@ -17,6 +17,10 @@
     <ctl name="SPK_L Mux" value="MIXEL Switch" />
     <ctl name="SPK_R Mux" value="MIXER Switch" />
     <ctl name="External Speaker Switch" value="1" />
+    <ctl name="LINEL Mux" value="DAC"/>
+    <ctl name="LINER Mux" value="DAC"/>
+    <ctl name="HPL Mux" value="DAC"/>
+    <ctl name="HPR Mux" value="DAC"/>
   </path>
 
   <path name="media-speaker-off">
@@ -39,6 +43,10 @@
     <ctl name="HP_L Mux" value="DACL HPL Switch" />
     <ctl name="HP_R Mux" value="DACR HPR Switch" />
     <ctl name="Headphone Switch" value="1" />
+    <ctl name="LINEL Mux" value="DAC"/>
+    <ctl name="LINER Mux" value="DAC"/>
+    <ctl name="HPL Mux" value="DAC"/>
+    <ctl name="HPR Mux" value="DAC"/>
   </path>
 
   <path name="media-single-speaker">
@@ -51,6 +59,10 @@
     <ctl name="SPK_L Mux" value="MIXL MIXR  Switch" />
     <ctl name="SPK_R Mux" value="MIXR MIXL Switch" />
     <ctl name="External Speaker Switch" value="1" />
+    <ctl name="LINEL Mux" value="DAC"/>
+    <ctl name="LINER Mux" value="DAC"/>
+    <ctl name="HPL Mux" value="DAC"/>
+    <ctl name="HPR Mux" value="DAC"/>
   </path>
 
   <path name="media-single-speaker-off">
@@ -80,7 +92,7 @@
     <ctl name="External Speaker Switch" value="1" />
   </path>
     <!-- capture -->
-  <path name="media-main-mic">
+  <!--<path name="media-main-mic">
     <ctl name="AIF1OUT0R Mux" value="AIF1_AD0R" />
     <ctl name="AIF1OUT0L Mux" value="AIF1_AD0L" />
     <ctl name="AIF1 AD0R Mixer ADCR Switch" value="1" />
@@ -89,7 +101,18 @@
     <ctl name="ADCL Mux" value="ADC" />    
     <ctl name="LADC input Mixer MIC1 boost Switch" value="1" />
     <ctl name="RADC input Mixer MIC1 boost Switch" value="1" />
+  </path>-->
+
+  <path name="media-main-mic">
+    <ctl name="Right Capture Inverting Mux" value="IN1R"/>
+    <ctl name="Left Capture Inverting Mux" value="IN1L"/>
+    <ctl name="Right Capture Mux" value="IN2R"/>
+    <ctl name="Left Capture Mux" value="IN2L"/>
+    <ctl name="Capture Volume" value="31 31"/>
+    <ctl name="Capture Switch" value="1 1"/>
+    <ctl name="Mic Bias Switch" value="1"/>
   </path>
+
 
   <path name="media-digital-mic">
     <ctl name="AIF1OUT0R Mux" value="AIF1_AD0R" />
@@ -100,7 +123,7 @@
     <ctl name="ADCL Mux" value="DMIC" />
   </path>
 
-  <path name="media-headset-mic">
+  <!--<path name="media-headset-mic">
     <ctl name="MIC2 SRC" value="MIC2" />
     <ctl name="LADC input Mixer MIC2 boost Switch" value="1" />
     <ctl name="RADC input Mixer MIC2 boost Switch" value="1" />
@@ -110,6 +133,56 @@
     <ctl name="AIF1 AD0R Mixer ADCR Switch" value="1" />
     <ctl name="AIF1OUT0L Mux" value="AIF1_AD0L" />
     <ctl name="AIF1OUT0R Mux" value="AIF1_AD0R" />
+  </path> -->
+
+  <path name="media-headset-mic">
+    <ctl name="Right Capture Inverting Mux" value="IN1R"/>
+    <ctl name="Left Capture Inverting Mux" value="IN1L"/>
+    <ctl name="Right Capture Mux" value="IN2R"/>
+    <ctl name="Left Capture Mux" value="IN2L"/>
+    <ctl name="Capture Volume" value="31 31"/>
+    <ctl name="Capture Switch" value="1 1"/>
+    <ctl name="Mic Bias Switch" value="1"/>
+  </path>
+
+  <path name="camcorder-route">
+    <ctl name="Right Capture Inverting Mux" value="IN2R"/>
+    <ctl name="Left Capture Inverting Mux" value="IN2L"/>
+    <ctl name="Right Capture Mux" value="IN1R"/>
+    <ctl name="Left Capture Mux" value="IN1L"/>
+    <ctl name="Capture Volume" value="5 5"/>
+    <ctl name="Capture Switch" value="1 1"/>
+    <ctl name="Mic Bias Switch" value="0"/>
+    <ctl name="LINEL Mux" value="Bypass"/>
+    <ctl name="LINER Mux" value="Bypass"/>
+    <ctl name="HPL Mux" value="Bypass"/>
+    <ctl name="HPR Mux" value="Bypass"/>
+  </path>
+
+  <path name="radio-capture-route">
+    <ctl name="Right Capture Inverting Mux" value="IN2R"/>
+    <ctl name="Left Capture Inverting Mux" value="IN2L"/>
+    <ctl name="Right Capture Mux" value="IN1R"/>
+    <ctl name="Left Capture Mux" value="IN1L"/>
+    <ctl name="Capture Volume" value="5 5"/>
+    <ctl name="Capture Switch" value="1 1"/>
+    <ctl name="Mic Bias Switch" value="0"/>
+    <ctl name="LINEL Mux" value="Bypass"/>
+    <ctl name="LINER Mux" value="Bypass"/>
+    <ctl name="HPL Mux" value="Bypass"/>
+    <ctl name="HPR Mux" value="Bypass"/>
+  </path>
+
+  <path name="aux-capture-route">
+    <ctl name="Right Capture Inverting Mux" value="IN2R"/>
+    <ctl name="Left Capture Inverting Mux" value="IN2L"/>
+    <ctl name="Right Capture Mux" value="IN1R"/>
+    <ctl name="Left Capture Mux" value="IN1L"/>
+    <ctl name="Capture Volume" value="5 5"/>
+    <ctl name="Capture Switch" value="1 1"/>
+    <ctl name="Mic Bias Switch" value="0"/>
+    <ctl name="LINEL Mux" value="Bypass"/>
+    <ctl name="LINER Mux" value="Bypass"/>
   </path>
 
   <!-- dbb phone path -->
